@@ -1,0 +1,149 @@
+*{
+    overflow:visible;
+    line-height:1.5;
+    font-family: "Times New Roman", serif;
+    font-size: large;
+}
+
+div.sense{
+    margin-left: 0px;
+}
+
+div.example{
+    font-style: italic;
+    margin-left: 10px;
+}
+
+span.word_activeword{
+    color:#ff33ff;
+    font-weight: bold;
+    font-family: "Arial", sans-serif;
+    font-size: x-large;
+}
+
+span.word{
+    color:#0000ff;
+    font-weight: bold;
+    font-family: "Arial", sans-serif;
+    font-size: x-large;
+}
+
+span.homnum_activeword{
+    color:#ff33ff;
+    font-weight: bold;
+    font-family: "Arial", sans-serif;
+    vertical-align: super;
+    font-size: x-small;
+}
+
+span.homnum{
+    color:#0000ff;
+    font-weight: bold;
+    font-family: "Arial", sans-serif;
+    vertical-align: super;
+    font-size: x-small;
+}
+
+span.blue_gothic{
+    color:#0000ff;
+    font-style: normal;
+    font-family: sans-serif;
+}
+
+span.black_bold_italic{
+    font-weight: bold;
+    font-style: italic;
+/*    font-family: "Arial", sans-serif;
+*/
+}
+
+span.ac{
+    color:#ff00ff;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+span.purple_italic{
+    color:#800080;
+    font-style: italic;
+    font-family: "Arial", sans-serif;
+}
+
+span.heading{
+    color:#0000ff;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+span.green{
+    color:#008800;
+    font-family: sans-serif;
+}
+
+span.nondv{
+    color:#0000ff;
+    font-family: sans-serif;
+}
+
+span.secheading{
+    color:#0000ff;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+span.signpost{
+    color:#008800;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+span.sensnumber{
+    color:#800080;
+    font-family: sans-serif;
+}
+
+span.spanheading{
+    font-weight: bold;
+}
+
+span.spanitalic{
+    font-weight: bold;
+    font-style: italic;
+}
+
+span.spansynopp{
+    color:#0000ff;
+    font-weight: bold;
+}
+
+span.spanthesref{
+    font-style: italic;
+}
+
+span.pos{
+    font-style: italic;
+}
+
+span.spanwarning{
+    color:#800080;
+}
+
+span.bold{
+    font-weight: bold;
+}
+
+
+span.inflection{
+    font-family: "Arial", sans-serif;
+}
+
+span.sensenum{
+    color:#0000ff;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+span.deriv{
+    color:#0000ff;
+    font-family: sans-serif;
+}
