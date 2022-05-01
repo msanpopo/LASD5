@@ -20,6 +20,8 @@ import java.util.logging.Logger;
 
 /*
     textTitle.tda(見出し語), NAME.tda(音声ファイルの名前)のデータ形式
+
+    null 区切りで文字列が入っている
  */
 public class TdaNullSeparated {
     private final String TAG = "Tda";
@@ -45,7 +47,6 @@ public class TdaNullSeparated {
         } catch (IOException ex) {
             Log.d(TAG, "read index:" + ex);
         }
-
     }
 
     public int getSize() {

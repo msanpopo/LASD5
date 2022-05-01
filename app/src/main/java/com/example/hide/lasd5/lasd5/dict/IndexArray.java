@@ -24,6 +24,11 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Objects;
 
+/*
+ content.tda.tdz と files.dat にある mp3 データなどを
+ 取り出すために必要な、オフセット値、チャンクサイズなどを次回使用時用に
+ 保存する
+ */
 public class IndexArray implements Serializable {
     private final String TAG = "IndexArray";
 
@@ -138,13 +143,11 @@ public class IndexArray implements Serializable {
         }
     }
 
-
     private IndexArray readObject(File file){
         Log.d(TAG, "readIndexFile:" + file);
 
         FileInputStream fis;
         ObjectInputStream ois;
-
         IndexArray obj = null;
 
         try {

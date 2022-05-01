@@ -20,10 +20,10 @@ public class Dictionary {
     private FilesSkn fsus;
     private FilesSkn fsexa;
     private FilesSkn fssfx;
+
     private SideList sideList;
     private Headword currentWord;
     private History history;
-
 
     private final HashSet<DictionaryStateListener> listenerSet;
 
@@ -31,21 +31,21 @@ public class Dictionary {
         void wordChanged();
     }
 
-    public Dictionary(DocumentFile dataDir, FilesConfigCft f, FilesConfigCft gb, FilesConfigCft us, FilesConfigCft exa, FilesConfigCft sfx){
+    public Dictionary(DocumentFile dataDir, FilesConfigCft f, FilesConfigCft gb, FilesConfigCft us, FilesConfigCft exa, FilesConfigCft sfx) {
         listenerSet = new HashSet<>();
         currentWord = null;
         this.dataDir = dataDir;
         saveDir = dataDir.getParentFile();
 
-            fs = new FilesSkn(this.dataDir, f, "TEXTTITLE.tda");
-            fsgb = new FilesSkn(this.dataDir, gb, "NAME.tda");   // 発音データ
-            fsus = new FilesSkn(this.dataDir, us, "NAME.tda");   // 発音データ
-            fsexa = new FilesSkn(this.dataDir, exa, "NAME.tda");  // 音声データ
-            fssfx = new FilesSkn(this.dataDir, sfx, "NAME.tda");  // 音声データ
+        fs = new FilesSkn(this.dataDir, f, "TEXTTITLE.tda");
+        fsgb = new FilesSkn(this.dataDir, gb, "NAME.tda");   // 発音データ
+        fsus = new FilesSkn(this.dataDir, us, "NAME.tda");   // 発音データ
+        fsexa = new FilesSkn(this.dataDir, exa, "NAME.tda");  // 音声データ
+        fssfx = new FilesSkn(this.dataDir, sfx, "NAME.tda");  // 音声データ
 
-            sideList = fs.getSideList(this.dataDir, f);
+        sideList = fs.getSideList(this.dataDir, f);
 
-            history = new History(saveDir);
+        history = new History(saveDir);
     }
 
     public void addListener(DictionaryStateListener l){

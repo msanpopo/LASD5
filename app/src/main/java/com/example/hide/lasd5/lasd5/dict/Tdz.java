@@ -20,6 +20,15 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/*
+contents.tda の各チャンクの圧縮前後のデータサイズ一覧
+8byte で一つのデータ
+リトルエンディアン
+
+前半 4byte 圧縮前サイズ
+後半 4byte 圧縮後サイズ
+ */
+
 public class Tdz {
     private final String TAG = "Tdz";
     private final String FILENAME = "CONTENT.tda.tdz";
@@ -97,7 +106,7 @@ public class Tdz {
     }
 
     /*
-     i 番目の圧縮前データの先頭のオフセット
+     i 番目の圧縮前データの先頭位置
      */
     public int getRawOffset(int i) {
         if (i == 0) {
@@ -116,7 +125,7 @@ public class Tdz {
     }
 
     /*
-     圧縮前のデータのオフセット値がどのインデックスのデータに含まれるか
+     圧縮前データの先頭からのオフセット値がどのチャンクに含まれるか
      */
     public int indexOf(int offset) {
         for (int i = 0; i < length; ++i) {

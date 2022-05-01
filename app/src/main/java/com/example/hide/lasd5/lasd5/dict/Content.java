@@ -20,6 +20,18 @@ import java.util.zip.Inflater;
 
 /*
     辞書データ または 発音データ
+    個々のデータの末尾に null をつけたものをいくつかつなげて圧縮している
+    (圧縮したものをチャンクと呼んでいる)
+    そうしてできたチャンクを全部つなげたものが content.tda
+
+    n番目のデータを取り出す時、
+    (1)files.dat から n番目のデータのオフセット取得
+    (2)そのオフセットがどのチャンクにあるかを content.tda.tdz から取得
+    (3)そのチャンクが content.tda のどこにありサイズはいくらかを content.tda.tdz から取得
+    (4)チャンクを取り出して解凍
+    (5)解凍した中のどこにあるかを tda と tdz から計算して取り出し
+
+    tda と tdz のデータは IndexArray の中にまとめて保存してある
  */
 public class Content {
     private final static String FILENAME = "CONTENT.tda";
@@ -32,6 +44,7 @@ public class Content {
     public Content(DocumentFile path, int length, FilesConfigCft e, IndexArray ia) {
         targetFile = path.findFile(FILENAME);
 
+        // TODO ここで indexarray をつくる必要ない。外でできる
         Tdz tdz = new Tdz(path);
         FilesDat filesDat = new FilesDat(path, length, e);
 
@@ -115,13 +128,11 @@ public class Content {
 
         try {
             is = new DataInputStream(new BufferedInputStream(new ByteArrayInputStream(chunk)));
-
             result = new byte[len];
 
       //      System.out.println("getData  offset:" + offset + " len:" + len);
             is.skipBytes(offset);
             is.readFully(result);
-
        //   System.out.println("getData data size:" + result.length);
 
         } catch (IOException ex) {

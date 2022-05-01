@@ -31,6 +31,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+/*
+データが入っている files.skn という名前のフォルダ
+ */
 public class FilesSkn {
     private final String TAG = "FilesSkn";
     private Content content;
@@ -50,17 +53,14 @@ public class FilesSkn {
         if(indexFile != null && indexFile.exists()){
             indexArray = new IndexArray(indexFile);
             content = new Content(targetPath);
-
         }else{
             DocumentFile tdaFile = targetPath.findFile(tdaFilename);
-
             TdaNullSeparated nameList = new TdaNullSeparated(tdaFile);
             int len = nameList.getSize();
 
             System.out.println("TdaNullSeparated len:" + len);
 
             indexArray = new IndexArray(len);
-
             for(int i = 0; i < len; ++i){
                 indexArray.contentName[i] = nameList.get(i);
             }
@@ -150,8 +150,6 @@ public class FilesSkn {
             Collection<Headword> l = handler.getHeadwordList();
             sl.addAll(l);
         }
-
-
         return sl;
     }
 
@@ -192,7 +190,6 @@ public class FilesSkn {
             try {
                 InputStream is = new ByteArrayInputStream(bin);
                 parser.parse(is, handler);
-
             } catch (IOException ex) {
                 Logger.getLogger(FilesSkn.class.getName()).log(Level.SEVERE, null, ex);
             }

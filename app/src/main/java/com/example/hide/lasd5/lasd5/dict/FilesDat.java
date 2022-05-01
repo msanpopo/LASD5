@@ -19,6 +19,12 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/*
+files.dat は n 番目のデータのオフセットの情報
+(n番目の content データのオフセット位置だけ使用）
+
+1つあたりのデータサイズはいくらかという情報は config.cft に書いてある
+ */
 public class FilesDat {
     private final String TAG = "FilesDat";
 
@@ -26,7 +32,7 @@ public class FilesDat {
 
     private final int length;
     private final int[] type;
-    private final int[] contentOffset;
+    private final int[] contentOffset;   // これしか使ってない
     private final int[] nameOffset;
     private final int[] titleOffset;
     private final int[] aFile;
