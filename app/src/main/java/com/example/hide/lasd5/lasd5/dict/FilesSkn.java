@@ -64,7 +64,7 @@ public class FilesSkn {
             for(int i = 0; i < len; ++i){
                 indexArray.contentName[i] = nameList.get(i);
             }
-
+            indexArray = createIndexArray(targetPath, len, e, indexArray);
             content = new Content(targetPath, len, e, indexArray);
 
             Log.d(TAG, "text_title size " + nameList.getSize());
@@ -74,6 +74,32 @@ public class FilesSkn {
         }
     }
 
+    private IndexArray createIndexArray(DocumentFile path, int length, FilesConfigCft e, IndexArray ia) {
+        Tdz tdz = new Tdz(path);
+        FilesDat filesDat = new FilesDat(path, length, e);
+
+        for (int i = 0; i < length; ++i) {
+            int offsetAll = filesDat.getContentOffset(i); // n 番目の mp3 の全 content 上でのオフセット
+            int chunkIndex = tdz.indexOf(offsetAll); // そのオフセットが入っているチャンクのインデックス
+
+            ia.compressedChunkSize[i] = tdz.getCompressedSize(chunkIndex);
+            ia.chunkSize[i] = tdz.getRawSize(chunkIndex);
+            ia.chunkOffset[i] = tdz.getCompressedOffset(chunkIndex);
+
+            int first = tdz.getRawOffset(chunkIndex); // chunkIndex 番目の圧縮前の先頭オフセット
+
+            ia.rawOffset[i] = offsetAll - first;
+
+            if (i < filesDat.getSize() - 1) {
+                ia.rawSize[i] = filesDat.getContentOffset(i + 1) - filesDat.getContentOffset(i);
+            } else if (i == filesDat.getSize() - 1) {
+                ia.rawSize[i] = tdz.getTotalRawSize() - filesDat.getContentOffset(i);
+            } else {
+                System.out.println("Content.get ?? len ?  n:" + i);
+            }
+        }
+        return ia;
+    }
     private void writeListFile(Uri file){
         Log.d(TAG, "writeListFile:" + file);
 

@@ -34,7 +34,7 @@ import java.util.zip.Inflater;
     tda と tdz のデータは IndexArray の中にまとめて保存してある
  */
 public class Content {
-    private final static String FILENAME = "CONTENT.tda";
+    public final static String FILENAME = "CONTENT.tda";
     private DocumentFile targetFile;
 
     public Content(DocumentFile path){
@@ -44,30 +44,30 @@ public class Content {
     public Content(DocumentFile path, int length, FilesConfigCft e, IndexArray ia) {
         targetFile = path.findFile(FILENAME);
 
-        // TODO ここで indexarray をつくる必要ない。外でできる
-        Tdz tdz = new Tdz(path);
-        FilesDat filesDat = new FilesDat(path, length, e);
+//        // TODO ここで indexarray をつくる必要ない。外でできる
+//        Tdz tdz = new Tdz(path);
+//        FilesDat filesDat = new FilesDat(path, length, e);
 
-        for(int i = 0; i < length; ++i){
-            int offsetAll = filesDat.getContentOffset(i); // n 番目の mp3 の全 content 上でのオフセット
-            int chunkIndex = tdz.indexOf(offsetAll); // そのオフセットが入っているチャンクのインデックス
-
-            ia.compressedChunkSize[i] = tdz.getCompressedSize(chunkIndex);
-            ia.chunkSize[i] = tdz.getRawSize(chunkIndex);
-            ia.chunkOffset[i] = tdz.getCompressedOffset(chunkIndex);
-
-            int first = tdz.getRawOffset(chunkIndex); // chunkIndex 番目の圧縮前の先頭オフセット
-
-            ia.rawOffset[i] = offsetAll - first;
-
-            if (i < filesDat.getSize() - 1) {
-                ia.rawSize[i] = filesDat.getContentOffset(i + 1) - filesDat.getContentOffset(i);
-            } else if (i == filesDat.getSize() - 1) {
-                ia.rawSize[i] = tdz.getTotalRawSize() - filesDat.getContentOffset(i);
-            } else {
-                System.out.println("Content.get ?? len ?  n:" + i);
-            }
-        }
+//        for(int i = 0; i < length; ++i){
+//            int offsetAll = filesDat.getContentOffset(i); // n 番目の mp3 の全 content 上でのオフセット
+//            int chunkIndex = tdz.indexOf(offsetAll); // そのオフセットが入っているチャンクのインデックス
+//
+//            ia.compressedChunkSize[i] = tdz.getCompressedSize(chunkIndex);
+//            ia.chunkSize[i] = tdz.getRawSize(chunkIndex);
+//            ia.chunkOffset[i] = tdz.getCompressedOffset(chunkIndex);
+//
+//            int first = tdz.getRawOffset(chunkIndex); // chunkIndex 番目の圧縮前の先頭オフセット
+//
+//            ia.rawOffset[i] = offsetAll - first;
+//
+//            if (i < filesDat.getSize() - 1) {
+//                ia.rawSize[i] = filesDat.getContentOffset(i + 1) - filesDat.getContentOffset(i);
+//            } else if (i == filesDat.getSize() - 1) {
+//                ia.rawSize[i] = tdz.getTotalRawSize() - filesDat.getContentOffset(i);
+//            } else {
+//                System.out.println("Content.get ?? len ?  n:" + i);
+//            }
+//        }
     }
 
     public byte[] get(int n, IndexArray ia){
