@@ -25,10 +25,12 @@ public class History{
     private static final String HISTORY = "history.dat";
 
     private int[] history;   // history[0]:lenght , history[1]... データ
+    private DocumentFile saveDir;
 
     private int SIZE = 16;
 
     public History(DocumentFile saveDir){
+        this.saveDir = saveDir;
         history = new int[SIZE];
         for(int i = 0; i < SIZE; ++i){
             history[i] = -1;

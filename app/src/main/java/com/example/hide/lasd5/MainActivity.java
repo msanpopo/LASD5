@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity
         int getPosition();
     }
 
+
     /**
      * The PagerAdapter that will provide
      * fragments for each of the sections. We use a
@@ -166,25 +167,10 @@ public class MainActivity extends AppCompatActivity
         lasd5App = new LASD5App(dicType);
         if(lasd5App.hasDataDir()){
             Log.d(TAG,"onCreate: hasDataDir!");
-            boolean permitted = lasd5App.verifyStoragePermissions(this);
+
             Uri topUri = lasd5App.getTopDirUri();
 
-            if(topUri == null){
-                permitted = false;
-            }else{
-                permitted = true;
-            }
-            permitted = false;
-            if(permitted){
-                Log.d(TAG, "onCreate: permitted!");
-
-                //Uri topUri = lasd5App.getTopDirUri();
-                createDic(topUri);
-            }else{
-                Log.d(TAG,"onCreate: not permitted!!!!");
-
-                openPicker();
-            }
+            createDic(topUri);
         }else{
             Log.d(TAG, "onCreate: hasDataDir false!!!");
             dic = null;
@@ -396,6 +382,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onDialogStartClick(DialogFragment dialog) {
         Log.d(TAG, "onDialogStartClick");
+
+        openPicker();
     }
 
     private void showWord(String word) {
