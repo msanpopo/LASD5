@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.util.Log;
-
 import androidx.core.content.ContextCompat;
 
 import com.example.hide.lasd5.MainActivity;

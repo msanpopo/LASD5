@@ -1,14 +1,8 @@
 package com.example.hide.lasd5.lasd5.dict;
 
-import android.app.Application;
-import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
-
 import androidx.documentfile.provider.DocumentFile;
-
-import com.example.hide.lasd5.MainActivity;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -24,6 +18,8 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.example.hide.lasd5.MainActivity;
+
 /*
  content.tda.tdz と files.dat にある mp3 データなどを
  取り出すために必要な、オフセット値、チャンクサイズなどを次回使用時用に
@@ -36,6 +32,7 @@ public class IndexArray implements Serializable {
 
     public String[] contentName;
 
+
     public int[] chunkSize;
     public int[] compressedChunkSize;
     public int[] chunkOffset;
@@ -43,8 +40,8 @@ public class IndexArray implements Serializable {
     public int[] rawSize;
     public int[] rawOffset;
 
-    public IndexArray(int length){
-        this.length = length;
+    public IndexArray(TdaNullSeparated nameList, Tdz tdz, FilesDat filesDat){
+        this.length = nameList.getSize();
 
         contentName = new String[length];
         chunkSize = new int[length];
@@ -52,6 +49,26 @@ public class IndexArray implements Serializable {
         chunkOffset = new int[length];
         rawSize = new int[length];
         rawOffset = new int[length];
+
+        for (int i = 0; i < length; ++i) {
+            int offsetAll = filesDat.getContentOffset(i); // n 番目の mp3 の全 content 上でのオフセット
+            int chunkIndex = tdz.indexOf(offsetAll); // そのオフセットが入っているチャンクのインデックス
+            int first = tdz.getRawOffset(chunkIndex); // chunkIndex 番目の圧縮前の先頭オフセット
+
+            contentName[i] = nameList.get(i);
+            chunkSize[i] = tdz.getRawSize(chunkIndex);
+            compressedChunkSize[i] = tdz.getCompressedSize(chunkIndex);
+            chunkOffset[i] = tdz.getCompressedOffset(chunkIndex);
+            rawOffset[i] = offsetAll - first;
+
+            if (i < filesDat.getSize() - 1) {
+                rawSize[i] = filesDat.getContentOffset(i + 1) - filesDat.getContentOffset(i);
+            } else if (i == filesDat.getSize() - 1) {
+                rawSize[i] = tdz.getTotalRawSize() - filesDat.getContentOffset(i);
+            } else {
+                System.out.println("Content.get ?? len ?  n:" + i);
+            }
+        }
     }
 
     public IndexArray(DocumentFile file){
@@ -88,8 +105,6 @@ public class IndexArray implements Serializable {
                 out.writeInt(rawSize[i]);
                 out.writeInt(rawOffset[i]);
             }
-
-            out.close();
         } catch (IOException e) {
             Log.d(TAG, "writeIndexFile:" + file + ":" + e);
         }

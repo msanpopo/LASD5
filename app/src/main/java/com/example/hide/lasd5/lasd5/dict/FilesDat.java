@@ -66,6 +66,7 @@ public class FilesDat {
                 }
             } catch (EOFException ex) {
                 Log.d(TAG, "input:" + ex);
+                is.close();
             }
         } catch (IOException ex) {
             Log.d(TAG, "input:" + ex);

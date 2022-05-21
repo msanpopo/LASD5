@@ -1,5 +1,6 @@
 package com.example.hide.lasd5;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.ClipData;
@@ -23,11 +24,13 @@ import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.documentfile.provider.DocumentFile;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.hide.lasd5.lasd5.CreateDataFragment;
 import com.example.hide.lasd5.lasd5.DictionaryEnum;
 import com.example.hide.lasd5.lasd5.LASD5FilesConfigCftEnum;
 import com.example.hide.lasd5.lasd5.LASD5App;
@@ -46,8 +49,11 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements Dictionary.DictionaryStateListener,
-        SearchView.OnQueryTextListener, ActivityCompat.OnRequestPermissionsResultCallback {
+public class MainActivity extends AppCompatActivity
+        implements Dictionary.DictionaryStateListener,
+        SearchView.OnQueryTextListener,
+        ActivityCompat.OnRequestPermissionsResultCallback,
+        CreateDataFragment.DialogListener {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private Dictionary dic;
@@ -76,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements Dictionary.Dictio
 
         int getPosition();
     }
-
 
     /**
      * The PagerAdapter that will provide
@@ -158,16 +163,22 @@ public class MainActivity extends AppCompatActivity implements Dictionary.Dictio
             }
         });
 
-
         lasd5App = new LASD5App(dicType);
         if(lasd5App.hasDataDir()){
             Log.d(TAG,"onCreate: hasDataDir!");
             boolean permitted = lasd5App.verifyStoragePermissions(this);
+            Uri topUri = lasd5App.getTopDirUri();
 
+            if(topUri == null){
+                permitted = false;
+            }else{
+                permitted = true;
+            }
+            permitted = false;
             if(permitted){
                 Log.d(TAG, "onCreate: permitted!");
 
-                Uri topUri = lasd5App.getTopDirUri();
+                //Uri topUri = lasd5App.getTopDirUri();
                 createDic(topUri);
             }else{
                 Log.d(TAG,"onCreate: not permitted!!!!");
@@ -204,6 +215,7 @@ public class MainActivity extends AppCompatActivity implements Dictionary.Dictio
         startActivityForResult(intent, READ_FILES);
     }
 
+    @SuppressLint("WrongConstant")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         super.onActivityResult(requestCode, resultCode, resultData);
@@ -213,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements Dictionary.Dictio
                 Log.d(TAG, "onActivityResult: get resultData");
                 Uri topUri = resultData.getData();
 
-                int takeFlags = resultData.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                final int takeFlags = resultData.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION
                         | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
                 // Check for the freshest data.
@@ -229,6 +241,10 @@ public class MainActivity extends AppCompatActivity implements Dictionary.Dictio
         DocumentFile topDir = DocumentFile.fromTreeUri(this, topUri);
         DocumentFile dataDir = topDir.findFile(dicType.getDataDir());
 
+        if(dataDir == null){
+            dic = null;
+            return;
+        }
         Log.d(TAG, "createDic:topDir:" + topDir.getName() + "  dataDir:" + dataDir.getName());
 
         FilesConfigCft fs;
@@ -361,11 +377,25 @@ public class MainActivity extends AppCompatActivity implements Dictionary.Dictio
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id){
+            case R.id.action_craetedata:
+                showCreateDataDialog();
+                return true;
+            case R.id.action_settings:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
+    }
 
-        return super.onOptionsItemSelected(item);
+    private void showCreateDataDialog(){
+        DialogFragment dialog = new CreateDataFragment();
+        dialog.show(getSupportFragmentManager(), "CreateDataFragment");
+    }
+
+    @Override
+    public void onDialogStartClick(DialogFragment dialog) {
+        Log.d(TAG, "onDialogStartClick");
     }
 
     private void showWord(String word) {

@@ -81,12 +81,11 @@ public class Tdz {
                     ++length;
                 }
             } catch (EOFException ex) {
-                Log.d(TAG, "read:EOFException:" + ex);
+                Log.d(TAG, "read:EOFException:" + path.getName());
             }
         } catch (IOException ex) {
             Log.d(TAG, "read:IOException:" + ex);
         }
-        
     }
     
     public int getLength() {

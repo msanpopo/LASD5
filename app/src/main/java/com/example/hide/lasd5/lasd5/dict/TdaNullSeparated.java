@@ -2,21 +2,15 @@ package com.example.hide.lasd5.lasd5.dict;
 
 import android.net.Uri;
 import android.util.Log;
-
 import androidx.documentfile.provider.DocumentFile;
-
-import com.example.hide.lasd5.MainActivity;
-
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import com.example.hide.lasd5.MainActivity;
 
 /*
     textTitle.tda(見出し語), NAME.tda(音声ファイルの名前)のデータ形式
@@ -43,7 +37,7 @@ public class TdaNullSeparated {
                     sb = new StringBuilder();
                 }
             }
-
+            Log.d(TAG, "TdaNullSeparated len:" + l.size() + " :file" + file.getName());
         } catch (IOException ex) {
             Log.d(TAG, "read index:" + ex);
         }

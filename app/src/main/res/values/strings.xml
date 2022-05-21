@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">LASD5</string>
-    <string name="action_settings">Settings</string>
     <string name="action_search">Search</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_create_data">Create Data</string>
+    <string name="dialog_create_data">Create Data?</string>
+    <string name="dialog_start">Start</string>
+    <string name="dialog_cancel">Cancel</string>
     <string name="app_label">LASD5 S</string>
     <string name="search_hint">Search ...</string>
 

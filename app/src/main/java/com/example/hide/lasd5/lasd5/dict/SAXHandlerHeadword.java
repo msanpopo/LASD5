@@ -12,13 +12,10 @@ import java.util.Stack;
 import static com.example.hide.lasd5.lasd5.dict.LevelEnum.*;
 
 public class SAXHandlerHeadword extends DefaultHandler {
-
     private final Stack<String> stack = new Stack<>();
-
     private ArrayList<Headword> list = new ArrayList<>();
     private int index;
     private Headword hw = null;
-
     private LevelEnum level;
 
     @Override
