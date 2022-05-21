@@ -1,33 +1,28 @@
 package com.example.hide.lasd5.lasd5.dict;
 
-
 import android.net.Uri;
 import android.util.Log;
-
 import androidx.documentfile.provider.DocumentFile;
-
 import com.example.hide.lasd5.MainActivity;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class History{
     private final String TAG = "History";
     private static final String HISTORY = "history.dat";
 
-    private int[] history;   // history[0]:lenght , history[1]... データ
-    private DocumentFile saveDir;
+    private int[] history;   // history[0]:length , history[1]... データ
 
-    private int SIZE = 16;
+    private final DocumentFile saveDir;
+    private final int SIZE = 16;
 
     public History(DocumentFile saveDir){
         this.saveDir = saveDir;
@@ -39,7 +34,7 @@ public class History{
         read(saveDir);
     }
 
-    public void write(DocumentFile saveDir){
+    public void write(){
         Log.d(TAG, "writeHistory:" + saveDir);
 
         DocumentFile targetFile = saveDir.findFile(HISTORY);
@@ -52,12 +47,11 @@ public class History{
         try (OutputStream outputStream = MainActivity.getInstance().getContentResolver().openOutputStream(file);
              DataOutputStream out = new DataOutputStream(new BufferedOutputStream(Objects.requireNonNull(outputStream)))) {
 
-            out.writeInt(history.length);   // [0]:lenght
+            out.writeInt(history.length);   // [0]:length
             for (int aHistory : history) {
                 out.writeInt(aHistory);     // [1]...:各データ
             }
 
-            out.close();
         } catch (IOException e) {
             Log.d(TAG, "writeHistory:IOException:" + e);
         }
@@ -82,7 +76,6 @@ public class History{
                     history[i] = in.readInt();
                 }
 
-                in.close();
             } catch (IOException e) {
                 Log.d(TAG, "readHistory:IOException:" + e);
             }
@@ -124,9 +117,7 @@ public class History{
     }
 
     public void clear(){
-        for(int i = 0; i < history.length; ++i){
-            history[i] = -1;
-        }
+        Arrays.fill(history, -1);
     }
 
     public String toString(){

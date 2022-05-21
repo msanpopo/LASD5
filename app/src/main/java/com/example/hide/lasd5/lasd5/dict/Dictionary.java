@@ -136,7 +136,7 @@ public class Dictionary {
     public void setWord(Headword hw){
         currentWord = hw;
         history.push(sideList.getListIndex(currentWord));
-        history.write(saveDir);
+        history.write();
         wordChanged();
     }
 
@@ -185,7 +185,7 @@ public class Dictionary {
     }
 
     public void save(){
-        history.write(saveDir);
+        history.write();
     }
 
     public void showHistory(){

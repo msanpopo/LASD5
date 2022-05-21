@@ -12,7 +12,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.provider.DocumentsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -66,7 +65,6 @@ public class MainActivity extends AppCompatActivity
 
     private static MainActivity instance = null;
 
-
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -79,10 +77,8 @@ public class MainActivity extends AppCompatActivity
 
     public interface WordChangedListener {
         void wordChanged();
-
         int getPosition();
     }
-
 
     /**
      * The PagerAdapter that will provide
@@ -150,7 +146,6 @@ public class MainActivity extends AppCompatActivity
                 // Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
                 ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("simple text", "Hello, World!");
 
                 Log.d(TAG, "fab_pressed");
 
@@ -164,17 +159,9 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        lasd5App = new LASD5App(dicType);
-        if(lasd5App.hasDataDir()){
-            Log.d(TAG,"onCreate: hasDataDir!");
-
-            Uri topUri = lasd5App.getTopDirUri();
-
-            createDic(topUri);
-        }else{
-            Log.d(TAG, "onCreate: hasDataDir false!!!");
-            dic = null;
-        }
+        lasd5App = new LASD5App();
+        Uri topUri = lasd5App.getTopDirUri();
+        dic = createDic(topUri);
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -183,53 +170,12 @@ public class MainActivity extends AppCompatActivity
 
     private static final int READ_FILES = 1;
 
-    public void openPicker() {
-        Log.d(TAG,"openPicker");
-        // system's file picker.
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-
-        //    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-
-        // Optionally, specify a URI for the directory that should be opened in
-        // the system file picker when it loads.
-   //     Uri uriToLoad = Uri.fromFile(topDir);
-   //     Log.d(TAG, "openDirectory:uriToLoad:" + uriToLoad);
-
-   //     intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, uriToLoad);
-
-        startActivityForResult(intent, READ_FILES);
-    }
-
-    @SuppressLint("WrongConstant")
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-        super.onActivityResult(requestCode, resultCode, resultData);
-        Log.d(TAG, "onActivityResult:");
-        if (requestCode == READ_FILES && resultCode == Activity.RESULT_OK) {
-            if (resultData != null) {
-                Log.d(TAG, "onActivityResult: get resultData");
-                Uri topUri = resultData.getData();
-
-                final int takeFlags = resultData.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
-                // Check for the freshest data.
-                MainActivity.getInstance().getContentResolver().takePersistableUriPermission(topUri, takeFlags);
-
-                lasd5App.saveTopDir(topUri);
-                createDic(topUri);
-            }
-        }
-    }
-
-    private void createDic(Uri topUri){
+    private Dictionary createDic(Uri topUri){
         DocumentFile topDir = DocumentFile.fromTreeUri(this, topUri);
         DocumentFile dataDir = topDir.findFile(dicType.getDataDir());
 
         if(dataDir == null){
-            dic = null;
-            return;
+            return null;
         }
         Log.d(TAG, "createDic:topDir:" + topDir.getName() + "  dataDir:" + dataDir.getName());
 
@@ -255,6 +201,8 @@ public class MainActivity extends AppCompatActivity
 
         dic = new Dictionary(dataDir, fs, gb, us, exa, sfx);
         dic.addListener(this);
+
+        return dic;
     }
 
     @Override
@@ -335,7 +283,6 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy");
-
     }
 
     @Override
@@ -386,6 +333,37 @@ public class MainActivity extends AppCompatActivity
         openPicker();
     }
 
+    public void openPicker() {
+        Log.d(TAG,"openPicker");
+
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+
+        startActivityForResult(intent, READ_FILES);
+    }
+
+    @SuppressLint("WrongConstant")
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        super.onActivityResult(requestCode, resultCode, resultData);
+        Log.d(TAG, "onActivityResult:");
+        if (requestCode == READ_FILES && resultCode == Activity.RESULT_OK) {
+            if (resultData != null) {
+                Log.d(TAG, "onActivityResult: get resultData");
+                Uri topUri = resultData.getData();
+
+                final int takeFlags = resultData.getFlags() &
+                        (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                // Check for the freshest data.
+                MainActivity.getInstance().getContentResolver().takePersistableUriPermission(topUri, takeFlags);
+
+                lasd5App.saveTopDir(topUri);
+                dic = createDic(topUri);
+            }
+        }
+    }
+
     private void showWord(String word) {
         word = word.trim();
         if(dic != null && dic.hasWord(word)){
@@ -410,7 +388,6 @@ public class MainActivity extends AppCompatActivity
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -419,7 +396,7 @@ public class MainActivity extends AppCompatActivity
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return (Fragment)HistoryFragment.newInstance(position);
+                    return HistoryFragment.newInstance(position);
                 case 1:
                     return WordListFragment.newInstance(position);
                 case 2:
